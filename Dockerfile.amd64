@@ -22,6 +22,27 @@ RUN apt update \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
+
+
+# install my tools
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
+       openjdk-8-jdk
+    && apt autoclean -y \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add all install scripts for further steps
+ADD ./tools/ $INST_SCRIPTS/
+
+# Install some common tools
+RUN $INST_SCRIPTS/tools.sh
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+
+# Install custom fonts
+RUN $INST_SCRIPTS/install_custom_fonts.sh
+
+
 # install debs error if combine together
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
