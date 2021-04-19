@@ -33,6 +33,7 @@ RUN apt update \
     && curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && (dpkg -i ./google-chrome-stable_current_amd64.deb || apt-get install -fy) \
     && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add \
+    && apt-get -f install \
     && rm google-chrome-stable_current_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
 
@@ -59,6 +60,25 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /usr/local/ffmpeg \
     && ln -s /usr/bin/ffmpeg /usr/local/ffmpeg/ffmpeg
+
+
+# install my tools
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated openjdk-8-jdk git\    
+    && apt autoclean -y \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add all install scripts for further steps
+COPY tools /tmp
+
+# Install some common tools
+RUN /tmp/tools.sh
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+
+# Install custom fonts
+RUN /tmp/install_custom_fonts.sh
+
 
 # python library
 COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/

@@ -1,0 +1,1054 @@
+Sending build context to Docker daemon  10.39MB
+Step 1/36 : FROM nvidia/cuda:11.1.1-devel-ubuntu20.04 as system
+ ---> 6a3ff63fa464
+Step 2/36 : RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
+ ---> Using cache
+ ---> 9415d42227a0
+Step 3/36 : ENV DEBIAN_FRONTEND noninteractive
+ ---> Using cache
+ ---> d0aa44b1dfff
+Step 4/36 : RUN apt update     && apt install -y --no-install-recommends software-properties-common curl apache2-utils     && apt update     && apt install -y --no-install-recommends --allow-unauthenticated         supervisor nginx sudo net-tools zenity xz-utils         dbus-x11 x11-utils alsa-utils         mesa-utils libgl1-mesa-dri     && apt autoclean -y     && apt autoremove -y     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> adb1ab72ff97
+Step 5/36 : RUN apt update     && apt install -y --no-install-recommends --allow-unauthenticated         xvfb x11vnc         vim-tiny firefox ttf-ubuntu-font-family ttf-wqy-zenhei      && apt autoclean -y     && apt autoremove -y     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 8ba940b7f05e
+Step 6/36 : RUN apt update     && apt install -y gpg-agent     && curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb     && (dpkg -i ./google-chrome-stable_current_amd64.deb || apt-get install -fy)     && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add     && apt-get -f install     && rm google-chrome-stable_current_amd64.deb     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 2e0123f650c4
+Step 7/36 : RUN apt update     && apt install -y --no-install-recommends --allow-unauthenticated         lxde gtk2-engines-murrine gnome-themes-standard gtk2-engines-pixbuf gtk2-engines-murrine arc-theme     && apt autoclean -y     && apt autoremove -y     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 06327d0008d8
+Step 8/36 : ARG TINI_VERSION=v0.18.0
+ ---> Using cache
+ ---> 2b70ba41aff8
+Step 9/36 : ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /bin/tini
+
+
+ ---> Using cache
+ ---> a71224e02b71
+Step 10/36 : RUN chmod +x /bin/tini
+ ---> Using cache
+ ---> 23bb1ebe246b
+Step 11/36 : RUN apt update     && apt install -y --no-install-recommends --allow-unauthenticated         ffmpeg     && rm -rf /var/lib/apt/lists/*     && mkdir /usr/local/ffmpeg     && ln -s /usr/bin/ffmpeg /usr/local/ffmpeg/ffmpeg
+ ---> Using cache
+ ---> f578c066376b
+Step 12/36 : RUN apt update     && apt install -y --no-install-recommends --allow-unauthenticated openjdk-8-jdk     && apt autoclean -y     && apt autoremove -y     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 5e21f16338cd
+Step 13/36 : COPY tools /tmp
+ ---> 1ac4a301c19d
+Step 14/36 : RUN /tmp/tools.sh
+ ---> Running in d648e87ef045
+Install some common tools for further installation
+Ign:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Ign:2 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Get:3 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release [697 B]
+Get:4 http://dl.google.com/linux/chrome/deb stable InRelease [1811 B]
+Get:5 http://security.ubuntu.com/ubuntu focal-security InRelease [109 kB]
+Get:6 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release [564 B]
+Get:7 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release.gpg [836 B]
+Get:8 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release.gpg [833 B]
+Get:9 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3260 B]
+Get:10 http://mirrors.namecheap.com/ubuntu focal InRelease [265 kB]
+Get:13 http://dl.google.com/linux/chrome/deb stable/main amd64 Packages [1071 B]
+Get:11 http://mirrors.advancedhosters.com/ubuntu focal-updates InRelease [114 kB]
+Get:12 https://reflector.westga.edu/repos/Ubuntu/archive focal-backports InRelease [101 kB]
+Ign:14 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Packages
+Get:14 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Packages [485 kB]
+Get:15 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Packages [2445 B]
+Get:16 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [773 kB]
+Get:17 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [239 kB]
+Get:18 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [683 kB]
+Get:19 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [21.6 kB]
+Get:23 http://mirrors.namecheap.com/ubuntu focal/main amd64 Packages [1275 kB]
+Get:22 http://mirror.lstn.net/ubuntu focal/universe amd64 Packages [11.3 MB]
+Get:21 http://mirrors.liquidweb.com/ubuntu focal/restricted amd64 Packages [33.4 kB]
+Get:20 http://www.gtlib.gatech.edu/pub/ubuntu focal/multiverse amd64 Packages [177 kB]
+Get:26 http://ubuntu.cs.utah.edu/ubuntu focal-updates/restricted amd64 Packages [271 kB]
+Get:24 http://mirror.team-cymru.com/ubuntu focal-updates/universe amd64 Packages [950 kB]
+Get:25 https://la.mirrors.clouvider.net/ubuntu focal-updates/main amd64 Packages [1188 kB]
+Get:27 http://mirror.cs.jmu.edu/pub/ubuntu focal-updates/multiverse amd64 Packages [29.6 kB]
+Get:28 http://ubuntu.mirrors.pair.com/archive focal-backports/universe amd64 Packages [4305 B]
+Fetched 18.1 MB in 5s (3405 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+bzip2 is already the newest version (1.0.8-2).
+net-tools is already the newest version (1.60+git20180626.aebd88e-1ubuntu1).
+wget is already the newest version (1.20.3-1ubuntu1).
+wget set to manually installed.
+The following additional packages will be installed:
+  libblas3 libcanberra0 libgfortran5 libgpm2 liblapack3 libltdl7
+  libpython2-stdlib libpython2.7-minimal libpython2.7-stdlib libpython3.8
+  libtdb1 python-pkg-resources python2 python2-minimal python2.7
+  python2.7-minimal sound-theme-freedesktop vim-runtime
+Suggested packages:
+  libcanberra-gtk0 libcanberra-pulse gpm gfortran python-dev python-pytest
+  python-numpy-dbg python-numpy-doc python-setuptools python2-doc python-tk
+  python2.7-doc binfmt-support ctags vim-doc vim-scripts
+The following NEW packages will be installed:
+  libblas3 libcanberra0 libgfortran5 libgpm2 liblapack3 libltdl7
+  libpython2-stdlib libpython2.7-minimal libpython2.7-stdlib libpython3.8
+  libtdb1 locales python-numpy python-pkg-resources python2 python2-minimal
+  python2.7 python2.7-minimal sound-theme-freedesktop vim vim-runtime
+0 upgraded, 21 newly installed, 0 to remove and 15 not upgraded.
+Need to get 22.2 MB of archives.
+After this operation, 98.7 MB of additional disk space will be used.
+Get:1 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3260 B]
+Ign:9 http://mirrors.arpnetworks.com/Ubuntu focal-updates/main amd64 locales all 2.31-0ubuntu9.2
+Get:6 http://mirror.enzu.com/ubuntu focal-updates/universe amd64 python2.7 amd64 2.7.18-1~20.04.1 [248 kB]
+Get:5 http://ubuntu.mirrors.tds.net/pub/ubuntu focal-updates/universe amd64 libpython2.7-stdlib amd64 2.7.18-1~20.04.1 [1887 kB]
+Get:3 http://ubuntu.mirror.constant.com focal-updates/universe amd64 python2.7-minimal amd64 2.7.18-1~20.04.1 [1285 kB]
+Get:7 http://mirror.pit.teraswitch.com/ubuntu focal/universe amd64 libpython2-stdlib amd64 2.7.17-2ubuntu4 [7072 B]
+Get:2 http://mirror.cs.unm.edu/archive focal-updates/universe amd64 libpython2.7-minimal amd64 2.7.18-1~20.04.1 [335 kB]
+Get:4 http://archive.ubuntu.com/ubuntu focal/universe amd64 python2-minimal amd64 2.7.17-2ubuntu4 [27.5 kB]
+Get:12 http://mirrors.liquidweb.com/ubuntu focal/main amd64 libtdb1 amd64 1.4.2-3build1 [44.1 kB]
+Get:10 http://mirror.pit.teraswitch.com/ubuntu focal/main amd64 libblas3 amd64 3.9.0-1build1 [142 kB]
+Get:8 http://mirrors.wikimedia.org/ubuntu focal/universe amd64 python2 amd64 2.7.17-2ubuntu4 [26.5 kB]
+Get:11 http://mirror.vcu.edu/pub/gnu+linux/ubuntu focal/main amd64 libltdl7 amd64 2.4.6-14 [38.5 kB]
+Get:13 https://mirror.us.leaseweb.net/ubuntu focal/main amd64 sound-theme-freedesktop all 0.8-2ubuntu1 [384 kB]
+Get:16 http://mirrors.wikimedia.org/ubuntu focal/main amd64 libgpm2 amd64 1.20.7-5 [15.1 kB]
+Get:14 http://mirror.clarkson.edu/ubuntu focal/main amd64 libcanberra0 amd64 0.30-7ubuntu1 [38.1 kB]
+Get:15 https://atl.mirrors.clouvider.net/ubuntu focal-updates/main amd64 libgfortran5 amd64 10.2.0-5ubuntu1~20.04 [736 kB]
+Get:17 http://mirror.cs.pitt.edu/ubuntu/archive focal/main amd64 liblapack3 amd64 3.9.0-1build1 [2154 kB]
+Get:18 http://mirror.sjc02.svwh.net/ubuntu focal-updates/main amd64 libpython3.8 amd64 3.8.5-1~20.04.2 [1624 kB]
+Get:9 http://repos.forethought.net/ubuntu focal-updates/main amd64 locales all 2.31-0ubuntu9.2 [3872 kB]
+Get:20 http://mirrors.mit.edu/ubuntu focal/universe amd64 python-numpy amd64 1:1.16.5-2ubuntu7 [2144 kB]
+Get:21 http://mirrors.xtom.com/ubuntu focal/main amd64 vim-runtime all 2:8.1.2269-1ubuntu5 [5873 kB]
+Get:22 http://mirrors.maine.edu/ubuntu focal/main amd64 vim amd64 2:8.1.2269-1ubuntu5 [1238 kB]
+Get:19 http://mirrors.lug.mtu.edu/ubuntu focal/universe amd64 python-pkg-resources all 44.0.0-2 [129 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 22.3 MB in 8s (2624 kB/s)
+Selecting previously unselected package libpython2.7-minimal:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 48975 files and directories currently installed.)
+Preparing to unpack .../0-libpython2.7-minimal_2.7.18-1~20.04.1_amd64.deb ...
+Unpacking libpython2.7-minimal:amd64 (2.7.18-1~20.04.1) ...
+Selecting previously unselected package python2.7-minimal.
+Preparing to unpack .../1-python2.7-minimal_2.7.18-1~20.04.1_amd64.deb ...
+Unpacking python2.7-minimal (2.7.18-1~20.04.1) ...
+Selecting previously unselected package python2-minimal.
+Preparing to unpack .../2-python2-minimal_2.7.17-2ubuntu4_amd64.deb ...
+Unpacking python2-minimal (2.7.17-2ubuntu4) ...
+Selecting previously unselected package libpython2.7-stdlib:amd64.
+Preparing to unpack .../3-libpython2.7-stdlib_2.7.18-1~20.04.1_amd64.deb ...
+Unpacking libpython2.7-stdlib:amd64 (2.7.18-1~20.04.1) ...
+Selecting previously unselected package python2.7.
+Preparing to unpack .../4-python2.7_2.7.18-1~20.04.1_amd64.deb ...
+Unpacking python2.7 (2.7.18-1~20.04.1) ...
+Selecting previously unselected package libpython2-stdlib:amd64.
+Preparing to unpack .../5-libpython2-stdlib_2.7.17-2ubuntu4_amd64.deb ...
+Unpacking libpython2-stdlib:amd64 (2.7.17-2ubuntu4) ...
+Setting up libpython2.7-minimal:amd64 (2.7.18-1~20.04.1) ...
+Setting up python2.7-minimal (2.7.18-1~20.04.1) ...
+Setting up python2-minimal (2.7.17-2ubuntu4) ...
+Selecting previously unselected package python2.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 49722 files and directories currently installed.)
+Preparing to unpack .../00-python2_2.7.17-2ubuntu4_amd64.deb ...
+Unpacking python2 (2.7.17-2ubuntu4) ...
+Selecting previously unselected package locales.
+Preparing to unpack .../01-locales_2.31-0ubuntu9.2_all.deb ...
+Unpacking locales (2.31-0ubuntu9.2) ...
+Selecting previously unselected package libblas3:amd64.
+Preparing to unpack .../02-libblas3_3.9.0-1build1_amd64.deb ...
+Unpacking libblas3:amd64 (3.9.0-1build1) ...
+Selecting previously unselected package libltdl7:amd64.
+Preparing to unpack .../03-libltdl7_2.4.6-14_amd64.deb ...
+Unpacking libltdl7:amd64 (2.4.6-14) ...
+Selecting previously unselected package libtdb1:amd64.
+Preparing to unpack .../04-libtdb1_1.4.2-3build1_amd64.deb ...
+Unpacking libtdb1:amd64 (1.4.2-3build1) ...
+Selecting previously unselected package sound-theme-freedesktop.
+Preparing to unpack .../05-sound-theme-freedesktop_0.8-2ubuntu1_all.deb ...
+Unpacking sound-theme-freedesktop (0.8-2ubuntu1) ...
+Selecting previously unselected package libcanberra0:amd64.
+Preparing to unpack .../06-libcanberra0_0.30-7ubuntu1_amd64.deb ...
+Unpacking libcanberra0:amd64 (0.30-7ubuntu1) ...
+Selecting previously unselected package libgfortran5:amd64.
+Preparing to unpack .../07-libgfortran5_10.2.0-5ubuntu1~20.04_amd64.deb ...
+Unpacking libgfortran5:amd64 (10.2.0-5ubuntu1~20.04) ...
+Selecting previously unselected package libgpm2:amd64.
+Preparing to unpack .../08-libgpm2_1.20.7-5_amd64.deb ...
+Unpacking libgpm2:amd64 (1.20.7-5) ...
+Selecting previously unselected package liblapack3:amd64.
+Preparing to unpack .../09-liblapack3_3.9.0-1build1_amd64.deb ...
+Unpacking liblapack3:amd64 (3.9.0-1build1) ...
+Selecting previously unselected package libpython3.8:amd64.
+Preparing to unpack .../10-libpython3.8_3.8.5-1~20.04.2_amd64.deb ...
+Unpacking libpython3.8:amd64 (3.8.5-1~20.04.2) ...
+Selecting previously unselected package python-pkg-resources.
+Preparing to unpack .../11-python-pkg-resources_44.0.0-2_all.deb ...
+Unpacking python-pkg-resources (44.0.0-2) ...
+Selecting previously unselected package python-numpy.
+Preparing to unpack .../12-python-numpy_1%3a1.16.5-2ubuntu7_amd64.deb ...
+Unpacking python-numpy (1:1.16.5-2ubuntu7) ...
+Selecting previously unselected package vim-runtime.
+Preparing to unpack .../13-vim-runtime_2%3a8.1.2269-1ubuntu5_all.deb ...
+Adding 'diversion of /usr/share/vim/vim81/doc/help.txt to /usr/share/vim/vim81/doc/help.txt.vim-tiny by vim-runtime'
+Adding 'diversion of /usr/share/vim/vim81/doc/tags to /usr/share/vim/vim81/doc/tags.vim-tiny by vim-runtime'
+Unpacking vim-runtime (2:8.1.2269-1ubuntu5) ...
+Selecting previously unselected package vim.
+Preparing to unpack .../14-vim_2%3a8.1.2269-1ubuntu5_amd64.deb ...
+Unpacking vim (2:8.1.2269-1ubuntu5) ...
+Setting up libgpm2:amd64 (1.20.7-5) ...
+Setting up libtdb1:amd64 (1.4.2-3build1) ...
+Setting up locales (2.31-0ubuntu9.2) ...
+Generating locales (this might take a while)...
+Generation complete.
+Setting up libpython2.7-stdlib:amd64 (2.7.18-1~20.04.1) ...
+Setting up libblas3:amd64 (3.9.0-1build1) ...
+update-alternatives: using /usr/lib/x86_64-linux-gnu/blas/libblas.so.3 to provide /usr/lib/x86_64-linux-gnu/libblas.so.3 (libblas.so.3-x86_64-linux-gnu) in auto mode
+Setting up libpython3.8:amd64 (3.8.5-1~20.04.2) ...
+Setting up libltdl7:amd64 (2.4.6-14) ...
+Setting up libgfortran5:amd64 (10.2.0-5ubuntu1~20.04) ...
+Setting up sound-theme-freedesktop (0.8-2ubuntu1) ...
+Setting up vim-runtime (2:8.1.2269-1ubuntu5) ...
+Setting up libcanberra0:amd64 (0.30-7ubuntu1) ...
+Setting up liblapack3:amd64 (3.9.0-1build1) ...
+update-alternatives: using /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3 to provide /usr/lib/x86_64-linux-gnu/liblapack.so.3 (liblapack.so.3-x86_64-linux-gnu) in auto mode
+Setting up vim (2:8.1.2269-1ubuntu5) ...
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vim (vim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vimdiff (vimdiff) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rvim (rvim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rview (rview) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vi (vi) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/vi.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/vi.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/vi.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/vi.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/vi.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/vi.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/vi.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/vi.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/view (view) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/view.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/view.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/view.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/view.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/view.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/view.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/view.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/view.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/ex (ex) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/ex.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/ex.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/ex.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/ex.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/ex.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/ex.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/ex.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/ex.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/editor.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/editor.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/editor.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/editor.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/editor.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/editor.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/editor.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/editor.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group editor) doesn't exist
+Setting up python2.7 (2.7.18-1~20.04.1) ...
+Setting up libpython2-stdlib:amd64 (2.7.17-2ubuntu4) ...
+Setting up python2 (2.7.17-2ubuntu4) ...
+Setting up python-pkg-resources (44.0.0-2) ...
+Setting up python-numpy (1:1.16.5-2ubuntu7) ...
+Processing triggers for mime-support (3.64ubuntu1) ...
+Processing triggers for libc-bin (2.31-0ubuntu9.2) ...
+generate locales für en_US.UTF-8
+Generating locales (this might take a while)...
+  en_US.UTF-8... done
+Generation complete.
+Removing intermediate container d648e87ef045
+ ---> d9953727e827
+Step 15/36 : ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+ ---> Running in 4c769ee1d66b
+Removing intermediate container 4c769ee1d66b
+ ---> 99744648d320
+Step 16/36 : RUN /tmp/install_custom_fonts.sh
+ ---> Running in 9a6f2f33a431
+Installing ttf-wqy-zenhei
+[91m
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+[0mIgn:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Ign:2 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Hit:3 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release
+Hit:4 http://dl.google.com/linux/chrome/deb stable InRelease
+Hit:5 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release
+Hit:6 http://security.ubuntu.com/ubuntu focal-security InRelease
+Get:7 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3,260 B]
+Get:10 http://mirrors.maine.edu/ubuntu focal-backports InRelease [101 kB]
+Get:9 http://mirror.genesisadaptive.com/ubuntu focal-updates InRelease [114 kB]
+Hit:8 http://mirrors.rit.edu/ubuntu focal InRelease
+Fetched 218 kB in 2s (88.2 kB/s)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+15 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[91m
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+[0mReading package lists...
+Building dependency tree...
+Reading state information...
+fonts-wqy-zenhei is already the newest version (0.9.45-7ubuntu1).
+0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
+Removing intermediate container 9a6f2f33a431
+ ---> 216be20c2590
+Step 17/36 : COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
+ ---> c006d957ac5d
+Step 18/36 : RUN apt-get update     && dpkg-query -W -f='${Package}\n' > /tmp/a.txt     && apt-get install -y python3-pip python3-dev build-essential 	&& pip3 install setuptools wheel && pip3 install -r /tmp/requirements.txt     && ln -s /usr/bin/python3 /usr/local/bin/python     && dpkg-query -W -f='${Package}\n' > /tmp/b.txt     && apt-get remove -y `diff --changed-group-format='%>' --unchanged-group-format='' /tmp/a.txt /tmp/b.txt | xargs`     && apt-get autoclean -y     && apt-get autoremove -y     && rm -rf /var/lib/apt/lists/*     && rm -rf /var/cache/apt/* /tmp/a.txt /tmp/b.txt
+ ---> Running in c57ee1531fa5
+Ign:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Hit:2 http://dl.google.com/linux/chrome/deb stable InRelease
+Ign:3 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Hit:4 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release
+Hit:5 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release
+Hit:6 http://security.ubuntu.com/ubuntu focal-security InRelease
+Get:7 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3,260 B]
+Hit:10 http://mirrors.maine.edu/ubuntu focal-backports InRelease
+Hit:9 http://mirrors.usinternet.com/ubuntu/archive focal-updates InRelease
+Hit:8 https://nyc.mirrors.clouvider.net/ubuntu focal InRelease
+Fetched 3,260 B in 2s (1,336 B/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+build-essential is already the newest version (12.8ubuntu1.1).
+build-essential set to manually installed.
+The following additional packages will be installed:
+  libexpat1-dev libpython3-dev libpython3.8-dev python-pip-whl
+  python3-distutils python3-lib2to3 python3-setuptools python3-wheel
+  python3.8-dev zlib1g-dev
+Suggested packages:
+  python-setuptools-doc
+The following NEW packages will be installed:
+  libexpat1-dev libpython3-dev libpython3.8-dev python-pip-whl python3-dev
+  python3-distutils python3-lib2to3 python3-pip python3-setuptools
+  python3-wheel python3.8-dev zlib1g-dev
+0 upgraded, 12 newly installed, 0 to remove and 15 not upgraded.
+Need to get 7,337 kB of archives.
+After this operation, 29.1 MB of additional disk space will be used.
+Get:1 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3,260 B]
+Get:5 https://la.mirrors.clouvider.net/ubuntu focal-updates/universe amd64 python-pip-whl all 20.0.2-5ubuntu1.1 [1,799 kB]
+Get:6 http://mirror.arizona.edu/ubuntu focal-updates/main amd64 zlib1g-dev amd64 1:1.2.11.dfsg-2ubuntu1.2 [155 kB]
+Get:4 http://mirrors.lug.mtu.edu/ubuntu focal/main amd64 libpython3-dev amd64 3.8.2-0ubuntu2 [7,236 B]
+Get:2 http://mirror.nodesdirect.com/ubuntu focal/main amd64 libexpat1-dev amd64 2.2.9-1build1 [116 kB]
+Get:9 http://mirror.pit.teraswitch.com/ubuntu focal-updates/main amd64 python3-distutils all 3.8.5-1~20.04.1 [141 kB]
+Get:11 http://mirror.clarkson.edu/ubuntu focal/main amd64 python3-setuptools all 45.2.0-1 [330 kB]
+Get:7 http://repos.forethought.net/ubuntu focal-updates/main amd64 python3.8-dev amd64 3.8.5-1~20.04.2 [515 kB]
+Get:13 http://mirrors.accretive-networks.net/ubuntu focal-updates/universe amd64 python3-pip all 20.0.2-5ubuntu1.1 [230 kB]
+Get:8 http://ubuntu.osuosl.org/ubuntu focal-updates/main amd64 python3-lib2to3 all 3.8.5-1~20.04.1 [75.6 kB]
+Get:3 https://ubuntu.mirror.shastacoe.net/ubuntu focal-updates/main amd64 libpython3.8-dev amd64 3.8.5-1~20.04.2 [3,942 kB]
+Get:12 http://ftp.ussg.iu.edu/linux/ubuntu focal/universe amd64 python3-wheel all 0.34.2-1 [23.8 kB]
+Get:10 http://ubuntu.mirror.frontiernet.net/ubuntu focal/main amd64 python3-dev amd64 3.8.2-0ubuntu2 [1,212 B]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 7,340 kB in 2s (4,675 kB/s)
+Selecting previously unselected package libexpat1-dev:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 52759 files and directories currently installed.)
+Preparing to unpack .../00-libexpat1-dev_2.2.9-1build1_amd64.deb ...
+Unpacking libexpat1-dev:amd64 (2.2.9-1build1) ...
+Selecting previously unselected package libpython3.8-dev:amd64.
+Preparing to unpack .../01-libpython3.8-dev_3.8.5-1~20.04.2_amd64.deb ...
+Unpacking libpython3.8-dev:amd64 (3.8.5-1~20.04.2) ...
+Selecting previously unselected package libpython3-dev:amd64.
+Preparing to unpack .../02-libpython3-dev_3.8.2-0ubuntu2_amd64.deb ...
+Unpacking libpython3-dev:amd64 (3.8.2-0ubuntu2) ...
+Selecting previously unselected package python-pip-whl.
+Preparing to unpack .../03-python-pip-whl_20.0.2-5ubuntu1.1_all.deb ...
+Unpacking python-pip-whl (20.0.2-5ubuntu1.1) ...
+Selecting previously unselected package zlib1g-dev:amd64.
+Preparing to unpack .../04-zlib1g-dev_1%3a1.2.11.dfsg-2ubuntu1.2_amd64.deb ...
+Unpacking zlib1g-dev:amd64 (1:1.2.11.dfsg-2ubuntu1.2) ...
+Selecting previously unselected package python3.8-dev.
+Preparing to unpack .../05-python3.8-dev_3.8.5-1~20.04.2_amd64.deb ...
+Unpacking python3.8-dev (3.8.5-1~20.04.2) ...
+Selecting previously unselected package python3-lib2to3.
+Preparing to unpack .../06-python3-lib2to3_3.8.5-1~20.04.1_all.deb ...
+Unpacking python3-lib2to3 (3.8.5-1~20.04.1) ...
+Selecting previously unselected package python3-distutils.
+Preparing to unpack .../07-python3-distutils_3.8.5-1~20.04.1_all.deb ...
+Unpacking python3-distutils (3.8.5-1~20.04.1) ...
+Selecting previously unselected package python3-dev.
+Preparing to unpack .../08-python3-dev_3.8.2-0ubuntu2_amd64.deb ...
+Unpacking python3-dev (3.8.2-0ubuntu2) ...
+Selecting previously unselected package python3-setuptools.
+Preparing to unpack .../09-python3-setuptools_45.2.0-1_all.deb ...
+Unpacking python3-setuptools (45.2.0-1) ...
+Selecting previously unselected package python3-wheel.
+Preparing to unpack .../10-python3-wheel_0.34.2-1_all.deb ...
+Unpacking python3-wheel (0.34.2-1) ...
+Selecting previously unselected package python3-pip.
+Preparing to unpack .../11-python3-pip_20.0.2-5ubuntu1.1_all.deb ...
+Unpacking python3-pip (20.0.2-5ubuntu1.1) ...
+Setting up python3-wheel (0.34.2-1) ...
+Setting up libexpat1-dev:amd64 (2.2.9-1build1) ...
+Setting up libpython3.8-dev:amd64 (3.8.5-1~20.04.2) ...
+Setting up zlib1g-dev:amd64 (1:1.2.11.dfsg-2ubuntu1.2) ...
+Setting up python-pip-whl (20.0.2-5ubuntu1.1) ...
+Setting up python3-lib2to3 (3.8.5-1~20.04.1) ...
+Setting up python3-distutils (3.8.5-1~20.04.1) ...
+Setting up libpython3-dev:amd64 (3.8.2-0ubuntu2) ...
+Setting up python3-setuptools (45.2.0-1) ...
+Setting up python3-pip (20.0.2-5ubuntu1.1) ...
+Setting up python3.8-dev (3.8.5-1~20.04.2) ...
+Setting up python3-dev (3.8.2-0ubuntu2) ...
+Requirement already satisfied: setuptools in /usr/lib/python3/dist-packages (45.2.0)
+Requirement already satisfied: wheel in /usr/lib/python3/dist-packages (0.34.2)
+Collecting backports.ssl-match-hostname==3.7.0.1
+  Downloading backports.ssl_match_hostname-3.7.0.1.tar.gz (5.7 kB)
+Collecting certifi==2019.9.11
+  Downloading certifi-2019.9.11-py2.py3-none-any.whl (154 kB)
+Requirement already satisfied: chardet==3.0.4 in /usr/lib/python3/dist-packages (from -r /tmp/requirements.txt (line 3)) (3.0.4)
+Collecting Click==7.0
+  Downloading Click-7.0-py2.py3-none-any.whl (81 kB)
+Collecting Flask==1.1.1
+  Downloading Flask-1.1.1-py2.py3-none-any.whl (94 kB)
+Collecting Flask-Login==0.4.1
+  Downloading Flask-Login-0.4.1.tar.gz (14 kB)
+Collecting gevent==1.4.0
+  Downloading gevent-1.4.0.tar.gz (5.2 MB)
+Collecting gevent-websocket==0.10.1
+  Downloading gevent_websocket-0.10.1-py3-none-any.whl (22 kB)
+Collecting greenlet==0.4.15
+  Downloading greenlet-0.4.15-cp38-cp38-manylinux1_x86_64.whl (45 kB)
+Requirement already satisfied: idna==2.8 in /usr/lib/python3/dist-packages (from -r /tmp/requirements.txt (line 10)) (2.8)
+Collecting itsdangerous==1.1.0
+  Downloading itsdangerous-1.1.0-py2.py3-none-any.whl (16 kB)
+Collecting Jinja2==2.11.3
+  Downloading Jinja2-2.11.3-py2.py3-none-any.whl (125 kB)
+Collecting MarkupSafe==1.1.1
+  Downloading MarkupSafe-1.1.1-cp38-cp38-manylinux2010_x86_64.whl (32 kB)
+Collecting meld3==2.0.0
+  Downloading meld3-2.0.0-py2.py3-none-any.whl (24 kB)
+Requirement already satisfied: requests==2.22.0 in /usr/lib/python3/dist-packages (from -r /tmp/requirements.txt (line 15)) (2.22.0)
+Collecting six==1.12.0
+  Downloading six-1.12.0-py2.py3-none-any.whl (10 kB)
+Collecting urllib3==1.25.6
+  Downloading urllib3-1.25.6-py2.py3-none-any.whl (125 kB)
+Collecting websocket-client==0.47.0
+  Downloading websocket_client-0.47.0-py2.py3-none-any.whl (200 kB)
+Collecting Werkzeug==0.16.0
+  Downloading Werkzeug-0.16.0-py2.py3-none-any.whl (327 kB)
+Building wheels for collected packages: backports.ssl-match-hostname, Flask-Login, gevent
+  Building wheel for backports.ssl-match-hostname (setup.py): started
+  Building wheel for backports.ssl-match-hostname (setup.py): finished with status 'done'
+  Created wheel for backports.ssl-match-hostname: filename=backports.ssl_match_hostname-3.7.0.1-py2.py3-none-any.whl size=6741 sha256=4e1172fb2859b13c046689a9bb3ac31d2d6cf1bc8d754534a8787b50cf8b171f
+  Stored in directory: /root/.cache/pip/wheels/20/46/1e/7f787654ba5b7900e9a3be46a6fd89a99da05f4cefb655d3d6
+  Building wheel for Flask-Login (setup.py): started
+  Building wheel for Flask-Login (setup.py): finished with status 'done'
+  Created wheel for Flask-Login: filename=Flask_Login-0.4.1-py2.py3-none-any.whl size=15935 sha256=498d6e0eaf06ded820d549bfa71a0863e8f12009c7f4705acb338433c3bedc1f
+  Stored in directory: /root/.cache/pip/wheels/ec/8e/42/16110a8b4f17e4ef4bd0abd42969fc1fc38229348de9f071df
+  Building wheel for gevent (setup.py): started
+  Building wheel for gevent (setup.py): still running...
+  Building wheel for gevent (setup.py): still running...
+  Building wheel for gevent (setup.py): still running...
+  Building wheel for gevent (setup.py): finished with status 'done'
+  Created wheel for gevent: filename=gevent-1.4.0-cp38-cp38-linux_x86_64.whl size=6864029 sha256=63b9847cbfb9d681697db5389cd826156e28032555eaaae4c8d72118bc1eec1c
+  Stored in directory: /root/.cache/pip/wheels/bb/ba/74/b6926f1aa3bcea7ae9a090d61b84e54de904df7ffd87a190b8
+Successfully built backports.ssl-match-hostname Flask-Login gevent
+Installing collected packages: backports.ssl-match-hostname, certifi, Click, itsdangerous, Werkzeug, MarkupSafe, Jinja2, Flask, Flask-Login, greenlet, gevent, gevent-websocket, meld3, six, urllib3, websocket-client
+  Attempting uninstall: certifi
+    Found existing installation: certifi 2019.11.28
+    Not uninstalling certifi at /usr/lib/python3/dist-packages, outside environment /usr
+    Can't uninstall 'certifi'. No files were found to uninstall.
+  Attempting uninstall: six
+    Found existing installation: six 1.14.0
+    Not uninstalling six at /usr/lib/python3/dist-packages, outside environment /usr
+    Can't uninstall 'six'. No files were found to uninstall.
+  Attempting uninstall: urllib3
+    Found existing installation: urllib3 1.25.8
+    Not uninstalling urllib3 at /usr/lib/python3/dist-packages, outside environment /usr
+    Can't uninstall 'urllib3'. No files were found to uninstall.
+Successfully installed Click-7.0 Flask-1.1.1 Flask-Login-0.4.1 Jinja2-2.11.3 MarkupSafe-1.1.1 Werkzeug-0.16.0 backports.ssl-match-hostname-3.7.0.1 certifi-2019.9.11 gevent-1.4.0 gevent-websocket-0.10.1 greenlet-0.4.15 itsdangerous-1.1.0 meld3-2.0.0 six-1.12.0 urllib3-1.25.6 websocket-client-0.47.0
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following packages will be REMOVED:
+  libexpat1-dev libpython3-dev libpython3.8-dev python-pip-whl python3-dev
+  python3-distutils python3-lib2to3 python3-pip python3-setuptools
+  python3-wheel python3.8-dev zlib1g-dev
+0 upgraded, 0 newly installed, 12 to remove and 15 not upgraded.
+After this operation, 29.1 MB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 53624 files and directories currently installed.)
+Removing python3-dev (3.8.2-0ubuntu2) ...
+Removing python3.8-dev (3.8.5-1~20.04.2) ...
+Removing libpython3-dev:amd64 (3.8.2-0ubuntu2) ...
+Removing libpython3.8-dev:amd64 (3.8.5-1~20.04.2) ...
+Removing libexpat1-dev:amd64 (2.2.9-1build1) ...
+Removing python3-pip (20.0.2-5ubuntu1.1) ...
+Removing python-pip-whl (20.0.2-5ubuntu1.1) ...
+Removing python3-setuptools (45.2.0-1) ...
+Removing python3-distutils (3.8.5-1~20.04.1) ...
+Removing python3-lib2to3 (3.8.5-1~20.04.1) ...
+Removing python3-wheel (0.34.2-1) ...
+Removing zlib1g-dev:amd64 (1:1.2.11.dfsg-2ubuntu1.2) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+0 upgraded, 0 newly installed, 0 to remove and 15 not upgraded.
+Removing intermediate container c57ee1531fa5
+ ---> 4f9b3db6ed5d
+Step 19/36 : FROM nvidia/cuda:11.1.1-devel-ubuntu20.04 as builder
+ ---> 6a3ff63fa464
+Step 20/36 : RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
+ ---> Using cache
+ ---> 9415d42227a0
+Step 21/36 : RUN apt-get update     && apt-get install -y --no-install-recommends curl ca-certificates gnupg patch
+ ---> Running in 26017b63e012
+Ign:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Ign:2 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Get:3 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release [697 B]
+Get:4 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release [564 B]
+Get:5 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release.gpg [836 B]
+Get:6 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release.gpg [833 B]
+Get:7 http://security.ubuntu.com/ubuntu focal-security InRelease [109 kB]
+Get:8 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3260 B]
+Get:11 http://mirror.enzu.com/ubuntu focal-backports InRelease [101 kB]
+Get:10 http://mirror.sjc02.svwh.net/ubuntu focal-updates InRelease [114 kB]
+Get:9 http://mirror.us-tx.kamatera.com/ubuntu focal InRelease [265 kB]
+Ign:12 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Packages
+Get:12 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Packages [485 kB]
+Get:13 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Packages [2445 B]
+Ign:14 http://mirrors.arpnetworks.com/Ubuntu focal-backports/universe amd64 Packages
+Get:14 http://mirror.cogentco.com/pub/linux/ubuntu focal-backports/universe amd64 Packages [4305 B]
+Get:15 http://mirror.pit.teraswitch.com/ubuntu focal-updates/restricted amd64 Packages [271 kB]
+Get:18 http://mirror.us-midwest-1.nexcess.net/ubuntu focal-updates/universe amd64 Packages [950 kB]
+Get:16 http://mirror.us-ny2.kamatera.com/ubuntu focal-updates/main amd64 Packages [1188 kB]
+Get:20 http://mirror.sjc02.svwh.net/ubuntu focal/restricted amd64 Packages [33.4 kB]
+Get:21 https://mirror.os6.org/ubuntu focal/universe amd64 Packages [11.3 MB]
+Get:17 http://mirrors.lug.mtu.edu/ubuntu focal-updates/multiverse amd64 Packages [29.6 kB]
+Get:19 https://mirror.clt.pvps.io/ubuntu focal/main amd64 Packages [1275 kB]
+Get:22 http://mirror.us-sc.kamatera.com/ubuntu focal/multiverse amd64 Packages [177 kB]
+Get:23 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [773 kB]
+Get:24 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [239 kB]
+Get:25 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [683 kB]
+Get:26 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [21.6 kB]
+Fetched 18.1 MB in 5s (3439 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+patch is already the newest version (2.7.6-6).
+patch set to manually installed.
+ca-certificates is already the newest version (20210119~20.04.1).
+gnupg is already the newest version (2.2.19-3ubuntu2.1).
+gnupg set to manually installed.
+The following additional packages will be installed:
+  libbrotli1 libcurl4 libgssapi-krb5-2 libk5crypto3 libkeyutils1 libkrb5-3
+  libkrb5support0 libnghttp2-14 libpsl5 librtmp1 libssh-4
+Suggested packages:
+  krb5-doc krb5-user
+Recommended packages:
+  krb5-locales publicsuffix
+The following NEW packages will be installed:
+  curl libbrotli1 libcurl4 libgssapi-krb5-2 libk5crypto3 libkeyutils1
+  libkrb5-3 libkrb5support0 libnghttp2-14 libpsl5 librtmp1 libssh-4
+0 upgraded, 12 newly installed, 0 to remove and 16 not upgraded.
+Need to get 1589 kB of archives.
+After this operation, 4953 kB of additional disk space will be used.
+Get:1 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3260 B]
+Get:2 http://mirror.math.ucdavis.edu/ubuntu focal-updates/main amd64 libkrb5support0 amd64 1.17-6ubuntu4.1 [30.9 kB]
+Get:7 http://mirrors.accretive-networks.net/ubuntu focal/main amd64 libpsl5 amd64 0.21.0-1ubuntu1 [51.5 kB]
+Get:5 http://mirror.lstn.net/ubuntu focal-updates/main amd64 libkrb5-3 amd64 1.17-6ubuntu4.1 [330 kB]
+Get:3 http://mirror.enzu.com/ubuntu focal-updates/main amd64 libk5crypto3 amd64 1.17-6ubuntu4.1 [79.9 kB]
+Get:12 http://mirrors.accretive-networks.net/ubuntu focal-updates/main amd64 libcurl4 amd64 7.68.0-1ubuntu2.5 [234 kB]
+Get:13 http://ubuntu.cs.utah.edu/ubuntu focal-updates/main amd64 curl amd64 7.68.0-1ubuntu2.5 [161 kB]
+Get:9 http://mirror.sjc02.svwh.net/ubuntu focal/main amd64 libnghttp2-14 amd64 1.40.0-1build1 [78.7 kB]
+Get:6 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libgssapi-krb5-2 amd64 1.17-6ubuntu4.1 [121 kB]
+Get:4 http://www.club.cc.cmu.edu/pub/ubuntu focal/main amd64 libkeyutils1 amd64 1.6-6ubuntu1 [10.2 kB]
+Get:10 http://ubuntu.mirror.frontiernet.net/ubuntu focal/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2build1 [54.9 kB]
+Get:11 https://reflector.westga.edu/repos/Ubuntu/archive focal-updates/main amd64 libssh-4 amd64 0.9.3-2ubuntu2.1 [170 kB]
+Get:8 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libbrotli1 amd64 1.0.7-6ubuntu0.1 [267 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 1592 kB in 2s (904 kB/s)
+Selecting previously unselected package libkrb5support0:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 12582 files and directories currently installed.)
+Preparing to unpack .../00-libkrb5support0_1.17-6ubuntu4.1_amd64.deb ...
+Unpacking libkrb5support0:amd64 (1.17-6ubuntu4.1) ...
+Selecting previously unselected package libk5crypto3:amd64.
+Preparing to unpack .../01-libk5crypto3_1.17-6ubuntu4.1_amd64.deb ...
+Unpacking libk5crypto3:amd64 (1.17-6ubuntu4.1) ...
+Selecting previously unselected package libkeyutils1:amd64.
+Preparing to unpack .../02-libkeyutils1_1.6-6ubuntu1_amd64.deb ...
+Unpacking libkeyutils1:amd64 (1.6-6ubuntu1) ...
+Selecting previously unselected package libkrb5-3:amd64.
+Preparing to unpack .../03-libkrb5-3_1.17-6ubuntu4.1_amd64.deb ...
+Unpacking libkrb5-3:amd64 (1.17-6ubuntu4.1) ...
+Selecting previously unselected package libgssapi-krb5-2:amd64.
+Preparing to unpack .../04-libgssapi-krb5-2_1.17-6ubuntu4.1_amd64.deb ...
+Unpacking libgssapi-krb5-2:amd64 (1.17-6ubuntu4.1) ...
+Selecting previously unselected package libpsl5:amd64.
+Preparing to unpack .../05-libpsl5_0.21.0-1ubuntu1_amd64.deb ...
+Unpacking libpsl5:amd64 (0.21.0-1ubuntu1) ...
+Selecting previously unselected package libbrotli1:amd64.
+Preparing to unpack .../06-libbrotli1_1.0.7-6ubuntu0.1_amd64.deb ...
+Unpacking libbrotli1:amd64 (1.0.7-6ubuntu0.1) ...
+Selecting previously unselected package libnghttp2-14:amd64.
+Preparing to unpack .../07-libnghttp2-14_1.40.0-1build1_amd64.deb ...
+Unpacking libnghttp2-14:amd64 (1.40.0-1build1) ...
+Selecting previously unselected package librtmp1:amd64.
+Preparing to unpack .../08-librtmp1_2.4+20151223.gitfa8646d.1-2build1_amd64.deb ...
+Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build1) ...
+Selecting previously unselected package libssh-4:amd64.
+Preparing to unpack .../09-libssh-4_0.9.3-2ubuntu2.1_amd64.deb ...
+Unpacking libssh-4:amd64 (0.9.3-2ubuntu2.1) ...
+Selecting previously unselected package libcurl4:amd64.
+Preparing to unpack .../10-libcurl4_7.68.0-1ubuntu2.5_amd64.deb ...
+Unpacking libcurl4:amd64 (7.68.0-1ubuntu2.5) ...
+Selecting previously unselected package curl.
+Preparing to unpack .../11-curl_7.68.0-1ubuntu2.5_amd64.deb ...
+Unpacking curl (7.68.0-1ubuntu2.5) ...
+Setting up libkeyutils1:amd64 (1.6-6ubuntu1) ...
+Setting up libpsl5:amd64 (0.21.0-1ubuntu1) ...
+Setting up libbrotli1:amd64 (1.0.7-6ubuntu0.1) ...
+Setting up libnghttp2-14:amd64 (1.40.0-1build1) ...
+Setting up libkrb5support0:amd64 (1.17-6ubuntu4.1) ...
+Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2build1) ...
+Setting up libk5crypto3:amd64 (1.17-6ubuntu4.1) ...
+Setting up libkrb5-3:amd64 (1.17-6ubuntu4.1) ...
+Setting up libgssapi-krb5-2:amd64 (1.17-6ubuntu4.1) ...
+Setting up libssh-4:amd64 (0.9.3-2ubuntu2.1) ...
+Setting up libcurl4:amd64 (7.68.0-1ubuntu2.5) ...
+Setting up curl (7.68.0-1ubuntu2.5) ...
+Processing triggers for libc-bin (2.31-0ubuntu9.2) ...
+Removing intermediate container 26017b63e012
+ ---> f7742f75a650
+Step 22/36 : RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -     && apt-get install -y nodejs
+ ---> Running in e4cb66a08535
+
+## Installing the NodeSource Node.js 12.x repo...
+
+
+## Populating apt-get cache...
+
++ apt-get update
+Ign:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Ign:2 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Hit:3 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release
+Hit:4 http://security.ubuntu.com/ubuntu focal-security InRelease
+Hit:5 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release
+Get:6 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3260 B]
+Hit:9 http://ubuntu.mirror.frontiernet.net/ubuntu focal-backports InRelease
+Hit:7 http://ubuntu.mirror.constant.com focal InRelease
+Get:8 http://plug-mirror.rcac.purdue.edu/ubuntu focal-updates InRelease [114 kB]
+Fetched 117 kB in 2s (50.6 kB/s)
+Reading package lists...
+
+## Installing packages required for setup: lsb-release...
+
++ apt-get install -y lsb-release > /dev/null 2>&1
+
+## Confirming "focal" is supported...
+
++ curl -sLf -o /dev/null 'https://deb.nodesource.com/node_12.x/dists/focal/Release'
+
+## Adding the NodeSource signing key to your keyring...
+
++ curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | tee /usr/share/keyrings/nodesource.gpg >/dev/null
+
+## Creating apt sources list file for the NodeSource Node.js 12.x repo...
+
++ echo 'deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_12.x focal main' > /etc/apt/sources.list.d/nodesource.list
++ echo 'deb-src [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_12.x focal main' >> /etc/apt/sources.list.d/nodesource.list
+
+## Running `apt-get update` for you...
+
++ apt-get update
+Ign:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Ign:2 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Hit:3 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release
+Hit:4 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release
+Hit:5 http://security.ubuntu.com/ubuntu focal-security InRelease
+Get:6 https://deb.nodesource.com/node_12.x focal InRelease [4583 B]
+Get:7 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3260 B]
+Hit:10 https://mirror.os6.org/ubuntu focal-updates InRelease
+Hit:9 http://mirror.pit.teraswitch.com/ubuntu focal InRelease
+Hit:11 http://mirror.genesisadaptive.com/ubuntu focal-backports InRelease
+Get:13 https://deb.nodesource.com/node_12.x focal/main amd64 Packages [766 B]
+Fetched 8609 B in 2s (4375 B/s)
+Reading package lists...
+
+## Run `sudo apt-get install -y nodejs` to install Node.js 12.x and npm
+## You may also need development tools to build native addons:
+     sudo apt-get install gcc g++ make
+## To install the Yarn package manager, run:
+     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
+     echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+     sudo apt-get update && sudo apt-get install yarn
+
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  nodejs
+0 upgraded, 1 newly installed, 0 to remove and 16 not upgraded.
+Need to get 18.1 MB of archives.
+After this operation, 93.6 MB of additional disk space will be used.
+Get:1 https://deb.nodesource.com/node_12.x focal/main amd64 nodejs amd64 12.22.1-deb-1nodesource1 [18.1 MB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 18.1 MB in 1s (23.1 MB/s)
+Selecting previously unselected package nodejs.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 13445 files and directories currently installed.)
+Preparing to unpack .../nodejs_12.22.1-deb-1nodesource1_amd64.deb ...
+Unpacking nodejs (12.22.1-deb-1nodesource1) ...
+Setting up nodejs (12.22.1-deb-1nodesource1) ...
+Removing intermediate container e4cb66a08535
+ ---> d5cc3686a4ef
+Step 23/36 : RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list     && apt-get update     && apt-get install -y yarn
+ ---> Running in 9d09f4ea6483
+[91mWarning: apt-key output should not be parsed (stdout is not a terminal)
+[0mOK
+deb https://dl.yarnpkg.com/debian/ stable main
+Hit:1 http://security.ubuntu.com/ubuntu focal-security InRelease
+Ign:2 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Ign:3 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Get:4 https://dl.yarnpkg.com/debian stable InRelease [17.1 kB]
+Hit:5 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  Release
+Hit:6 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release
+Hit:7 https://deb.nodesource.com/node_12.x focal InRelease
+Get:8 http://mirrors.ubuntu.com/mirrors.txt Mirrorlist [3260 B]
+Hit:10 http://archive.linux.duke.edu/ubuntu focal-updates InRelease
+Get:11 http://mirror.team-cymru.org/ubuntu focal-backports InRelease [101 kB]
+Hit:9 http://mirrors.tripadvisor.com/ubuntu focal InRelease
+Get:12 https://dl.yarnpkg.com/debian stable/main all Packages [10.2 kB]
+Get:14 https://dl.yarnpkg.com/debian stable/main amd64 Packages [10.2 kB]
+Fetched 141 kB in 3s (48.5 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  yarn
+0 upgraded, 1 newly installed, 0 to remove and 16 not upgraded.
+Need to get 891 kB of archives.
+After this operation, 5407 kB of additional disk space will be used.
+Get:1 https://dl.yarnpkg.com/debian stable/main amd64 yarn all 1.22.5-1 [891 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 891 kB in 0s (6746 kB/s)
+Selecting previously unselected package yarn.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 18330 files and directories currently installed.)
+Preparing to unpack .../archives/yarn_1.22.5-1_all.deb ...
+Unpacking yarn (1.22.5-1) ...
+Setting up yarn (1.22.5-1) ...
+Removing intermediate container 9d09f4ea6483
+ ---> 532c1ab87f94
+Step 24/36 : COPY web /src/web
+ ---> 1b06d4d95e15
+Step 25/36 : RUN cd /src/web     && yarn     && yarn build
+ ---> Running in 7d4817add417
+yarn install v1.22.5
+[1/5] Validating package.json...
+[2/5] Resolving packages...
+[3/5] Fetching packages...
+info fsevents@1.2.9: The platform "linux" is incompatible with this module.
+info "fsevents@1.2.9" is an optional dependency and failed compatibility check. Excluding it from installation.
+[4/5] Linking dependencies...
+[91mwarning " > webpack-cli@3.3.9" has incorrect peer dependency "webpack@4.x.x".
+warning " > webpack-dev-server@3.8.2" has incorrect peer dependency "webpack@^4.0.0".
+warning "webpack-dev-server > webpack-dev-middleware@3.7.2" has incorrect peer dependency "webpack@^4.0.0".
+[0m[5/5] Building fresh packages...
+Done in 135.18s.
+yarn run v1.22.5
+$ node build/build.js
+[91mBrowserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`
+[0mHash: [1m77f91d009d32a8249c6f[39m[22m
+Version: webpack [1m3.12.0[39m[22m
+Time: [1m34920[39m[22mms
+                                                                                 [1mAsset[39m[22m       [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m       [1mChunk Names[39m[22m
+                                              [1m[32mstatic/js/vendor.eba9acff8b0b3b1b22c4.js[39m[22m     162 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m         vendor
+                                                 [1m[32mstatic/js/app.fef011cae8f5fbff4b55.js[39m[22m    4.69 kB       [1m1[39m[22m  [1m[32m[emitted][39m[22m         app
+                                            [1m[32mstatic/js/manifest.3ad1d5771e9b13dbdad2.js[39m[22m  858 bytes       [1m2[39m[22m  [1m[32m[emitted][39m[22m         manifest
+                                   [1m[32mstatic/css/app.c90a3de1d5a865cd4149616f9b8040a5.css[39m[22m  399 bytes       [1m1[39m[22m  [1m[32m[emitted][39m[22m         app
+                               [1m[32mstatic/css/app.c90a3de1d5a865cd4149616f9b8040a5.css.map[39m[22m  799 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/js/vendor.eba9acff8b0b3b1b22c4.js.map[39m[22m     808 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m         vendor
+                                             [1m[32mstatic/js/app.fef011cae8f5fbff4b55.js.map[39m[22m    19.1 kB       [1m1[39m[22m  [1m[32m[emitted][39m[22m         app
+                                        [1m[32mstatic/js/manifest.3ad1d5771e9b13dbdad2.js.map[39m[22m    4.97 kB       [1m2[39m[22m  [1m[32m[emitted][39m[22m         manifest
+                                                                            [1m[32mindex.html[39m[22m  512 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/app/error-handler.js[39m[22m    2.18 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/images/alt.svg[39m[22m    3.55 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                 [1m[32mstatic/novnc/app/images/clipboard.svg[39m[22m    3.98 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/novnc/app/images/connect.svg[39m[22m    3.43 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/app/images/ctrl.svg[39m[22m    4.38 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/app/images/ctrlaltdel.svg[39m[22m    3.24 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/app/images/disconnect.svg[39m[22m    5.06 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/app/images/drag.svg[39m[22m    4.68 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/novnc/app/images/expander.svg[39m[22m    3.07 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/app/images/error.svg[39m[22m    3.11 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/app/images/fullscreen.svg[39m[22m    3.14 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/images/esc.svg[39m[22m    4.52 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/app/images/handle.svg[39m[22m    2.56 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                 [1m[32mstatic/novnc/app/images/handle_bg.svg[39m[22m    6.39 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/app/images/icons/Makefile[39m[22m  871 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                       [1m[32mstatic/novnc/app/images/icons/novnc-144x144.png[39m[22m    4.58 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-16x16.png[39m[22m  675 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                       [1m[32mstatic/novnc/app/images/icons/novnc-192x192.png[39m[22m    5.79 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-24x24.png[39m[22m       1 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-32x32.png[39m[22m    1.06 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-60x60.png[39m[22m    1.93 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-48x48.png[39m[22m     1.4 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                       [1m[32mstatic/novnc/app/images/icons/novnc-152x152.png[39m[22m    5.22 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                       [1m[32mstatic/novnc/app/images/icons/novnc-120x120.png[39m[22m    4.03 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-76x76.png[39m[22m    2.87 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-96x96.png[39m[22m    2.35 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                       [1m[32mstatic/novnc/app/images/icons/novnc-icon-sm.svg[39m[22m    11.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/app/images/info.svg[39m[22m     3.2 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/novnc/app/images/icons/novnc-icon.svg[39m[22m    11.5 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/app/images/mouse_left.svg[39m[22m       7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/novnc/app/images/keyboard.svg[39m[22m     6.4 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                              [1m[32mstatic/novnc/app/images/mouse_middle.svg[39m[22m       7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/app/images/mouse_none.svg[39m[22m    6.99 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                               [1m[32mstatic/novnc/app/images/mouse_right.svg[39m[22m       7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/novnc/app/images/settings.svg[39m[22m    3.08 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/app/images/power.svg[39m[22m    3.98 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/images/tab.svg[39m[22m    2.95 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                           [1m[32mstatic/novnc/app/images/toggleextrakeys.svg[39m[22m    4.44 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/novnc/app/images/warning.svg[39m[22m    3.87 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/novnc/app/images/windows.svg[39m[22m    3.18 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-72x72.png[39m[22m     2.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/app/images/icons/novnc-64x64.png[39m[22m    1.95 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/es.json[39m[22m    2.67 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/el.json[39m[22m    3.91 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/de.json[39m[22m    2.85 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/ko.json[39m[22m    2.96 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/tr.json[39m[22m    2.81 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/ru.json[39m[22m    3.83 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/app/locale/zh_CN.json[39m[22m     2.6 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/sv.json[39m[22m    2.85 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/app/locale/zh_TW.json[39m[22m    2.61 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/app/sounds/bell.oga[39m[22m    8.49 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/app/sounds/bell.mp3[39m[22m    4.53 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/app/localization.js[39m[22m    5.68 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/sounds/CREDITS[39m[22m  157 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/cs.json[39m[22m    2.88 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/app/styles/base.css[39m[22m    18.3 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                               [1m[32mstatic/novnc/app/styles/Orbitron700.ttf[39m[22m    38.6 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                              [1m[32mstatic/novnc/app/styles/Orbitron700.woff[39m[22m    17.5 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                           [1m[32mstatic/novnc/app/webutil.js[39m[22m     6.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                [1m[32mstatic/novnc/app/ui.js[39m[22m    56.2 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                  [1m[32mstatic/novnc/AUTHORS[39m[22m  358 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                           [1m[32mstatic/novnc/core/base64.js[39m[22m    4.19 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/core/decoders/copyrect.js[39m[22m  628 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/core/decoders/rre.js[39m[22m    1.21 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                 [1m[32mstatic/novnc/core/decoders/hextile.js[39m[22m    4.81 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/core/decoders/raw.js[39m[22m    1.74 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/core/decoders/tightpng.js[39m[22m  768 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/novnc/core/decoders/tight.js[39m[22m    9.66 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                        [1m[32mstatic/novnc/core/encodings.js[39m[22m    1.29 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/core/des.js[39m[22m    11.2 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                          [1m[32mstatic/novnc/core/display.js[39m[22m    20.8 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/core/input/domkeytable.js[39m[22m    11.4 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/novnc/core/input/fixedkeys.js[39m[22m     3.8 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/novnc/core/input/keyboard.js[39m[22m      13 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/core/input/keysym.js[39m[22m    34.6 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/core/input/util.js[39m[22m    5.28 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/novnc/core/input/keysymdef.js[39m[22m    25.4 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/core/input/mouse.js[39m[22m    9.99 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/core/input/vkeys.js[39m[22m    2.58 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/core/input/xtscancodes.js[39m[22m    14.3 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/core/rfb.js[39m[22m    68.9 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/core/util/browser.js[39m[22m    3.13 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                         [1m[32mstatic/novnc/core/inflator.js[39m[22m    1.17 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/core/util/cursor.js[39m[22m    7.56 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/core/util/events.js[39m[22m    4.22 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                 [1m[32mstatic/novnc/core/util/eventtarget.js[39m[22m  896 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/core/util/polyfill.js[39m[22m    1.87 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/core/util/logging.js[39m[22m    1.36 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                          [1m[32mstatic/novnc/core/websock.js[39m[22m    8.68 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/core/util/strings.js[39m[22m  301 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/docs/flash_policy.txt[39m[22m  197 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                          [1m[32mstatic/novnc/docs/LIBRARY.md[39m[22m    1.28 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/docs/LICENSE.BSD-2-Clause[39m[22m     1.3 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/novnc/docs/LICENSE.BSD-3-Clause[39m[22m    1.51 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/docs/API-internal.md[39m[22m    5.78 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                        [1m[32mstatic/novnc/docs/EMBEDDING.md[39m[22m     4.2 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/docs/API.md[39m[22m    11.6 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/nl.json[39m[22m    3.04 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/app/locale/pl.json[39m[22m    2.83 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/docs/LICENSE.OFL-1.1[39m[22m     4.3 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/docs/LICENSE.MPL-2.0[39m[22m    16.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                               [1m[32mstatic/novnc/docs/links[39m[22m    2.27 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                           [1m[32mstatic/novnc/docs/rfb_notes[39m[22m    3.47 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/docs/rfbproto-3.3.pdf[39m[22m     111 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/docs/rfbproto-3.7.pdf[39m[22m     166 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                               [1m[32mstatic/novnc/docs/notes[39m[22m  146 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/docs/rfbproto-3.8.pdf[39m[22m     144 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                            [1m[32mstatic/novnc/karma.conf.js[39m[22m    3.89 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/LICENSE.txt[39m[22m    2.32 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                             [1m[32mstatic/novnc/package.json[39m[22m    2.31 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/cs.po[39m[22m    5.49 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/de.po[39m[22m     5.9 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/el.po[39m[22m    7.42 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/es.po[39m[22m    5.27 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/po/Makefile[39m[22m  922 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/ko.po[39m[22m    5.48 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/nl.po[39m[22m    6.24 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                             [1m[32mstatic/novnc/po/noVNC.pot[39m[22m    4.41 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/pl.po[39m[22m    6.18 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/po2js[39m[22m    1.46 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/ru.po[39m[22m    6.69 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/sv.po[39m[22m    5.83 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/po/tr.po[39m[22m    5.46 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                         [1m[32mstatic/novnc/po/xgettext-html[39m[22m    3.54 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/po/zh_CN.po[39m[22m    5.09 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/po/zh_TW.po[39m[22m    5.18 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/tests/assertions.js[39m[22m    4.06 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                [1m[32mstatic/novnc/README.md[39m[22m    5.75 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                        [1m[32mstatic/novnc/tests/playback.js[39m[22m    5.05 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                 [1m[32mstatic/novnc/tests/karma-test-main.js[39m[22m    1.47 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/novnc/tests/fake.websocket.js[39m[22m    2.61 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/tests/playback-ui.js[39m[22m    6.17 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/tests/test.helper.js[39m[22m    12.8 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/novnc/tests/test.keyboard.js[39m[22m      24 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/tests/test.display.js[39m[22m    20.1 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/tests/test.mouse.js[39m[22m    12.3 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                               [1m[32mstatic/novnc/tests/test.localization.js[39m[22m     2.9 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                        [1m[32mstatic/novnc/tests/test.rfb.js[39m[22m     110 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/novnc/tests/test.util.js[39m[22m    2.49 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/novnc/tests/vnc_playback.html[39m[22m    1.41 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/tests/test.base64.js[39m[22m    1.26 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/tests/test.webutil.js[39m[22m    7.87 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/utils/genkeysymdef.js[39m[22m    3.16 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/novnc/utils/b64-to-binary.pl[39m[22m  396 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                          [1m[32mstatic/novnc/utils/img2js.py[39m[22m  918 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/utils/json2graph.py[39m[22m    6.68 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/tests/test.websock.js[39m[22m    17.1 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                          [1m[32mstatic/novnc/utils/launch.sh[39m[22m    4.99 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/novnc/utils/u2x11[39m[22m  911 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/novnc/utils/use_require.js[39m[22m    12.8 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                           [1m[32mstatic/novnc/utils/validate[39m[22m  627 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                             [1m[32mstatic/novnc/utils/use_require_helpers.js[39m[22m    3.31 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                          [1m[32mstatic/novnc/utils/README.md[39m[22m  536 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+         [1m[32mstatic/novnc/vendor/browser-es-module-loader/dist/browser-es-module-loader.js[39m[22m    46.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                         [1m[32mstatic/novnc/vendor/browser-es-module-loader/rollup.config.js[39m[22m  359 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+     [1m[32mstatic/novnc/vendor/browser-es-module-loader/dist/browser-es-module-loader.js.map[39m[22m    88.1 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                      [1m[32mstatic/novnc/vendor/browser-es-module-loader/src/babel-worker.js[39m[22m    1.11 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+          [1m[32mstatic/novnc/vendor/browser-es-module-loader/src/browser-es-module-loader.js[39m[22m     8.6 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/novnc/vendor/pako/lib/zlib/adler32.js[39m[22m  666 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/novnc/vendor/pako/lib/utils/common.js[39m[22m    1.06 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                        [1m[32mstatic/novnc/vendor/pako/lib/zlib/constants.js[39m[22m    1.33 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/novnc/vendor/pako/lib/zlib/deflate.js[39m[22m      60 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                            [1m[32mstatic/novnc/vendor/pako/lib/zlib/crc32.js[39m[22m  764 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/vendor/pako/lib/zlib/gzheader.js[39m[22m    1.25 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/novnc/vendor/pako/lib/zlib/inffast.js[39m[22m    11.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/novnc/vendor/pako/lib/zlib/inflate.js[39m[22m    47.1 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/vendor/pako/lib/zlib/inftrees.js[39m[22m    11.5 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/novnc/vendor/pako/lib/zlib/messages.js[39m[22m  560 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                [1m[32mstatic/novnc/vendor/browser-es-module-loader/README.md[39m[22m  419 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                      [1m[32mstatic/novnc/vendor/pako/LICENSE[39m[22m    1.08 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/novnc/vendor/pako/README.md[39m[22m  301 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                        [1m[32mstatic/novnc/vendor/promise.js[39m[22m    7.39 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                  [1m[32mstatic/novnc/VERSION[39m[22m    6 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                            [1m[32mstatic/novnc/vnc_lite.html[39m[22m    6.52 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/novnc/vnc.html[39m[22m    15.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                             [1m[32mstatic/scripts/flv.min.js[39m[22m     173 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/novnc/vendor/pako/lib/zlib/zstream.js[39m[22m  823 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                            [1m[32mstatic/novnc/vendor/pako/lib/zlib/trees.js[39m[22m    38.8 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/scripts/jquery-3.3.1.min.js[39m[22m    86.9 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                         [1m[32mstatic/websockify/CHANGES.txt[39m[22m    3.28 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                     [1m[32mstatic/video.html[39m[22m    3.19 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                       [1m[32mstatic/vnc.html[39m[22m    16.7 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/websockify/docs/release.txt[39m[22m  331 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                            [1m[32mstatic/websockify/docs/latency_results.txt[39m[22m    4.18 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                          [1m[32mstatic/websockify/docs/notes[39m[22m  248 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                             [1m[32mstatic/websockify/COPYING[39m[22m    7.65 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                            [1m[32mstatic/websockify/Makefile[39m[22m  153 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/websockify/docs/websockify.1[39m[22m    6.42 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                           [1m[32mstatic/websockify/README.md[39m[22m    7.35 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                         [1m[32mstatic/websockify/MANIFEST.in[39m[22m   56 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                              [1m[32mstatic/websockify/rebind[39m[22m  424 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                            [1m[32mstatic/websockify/rebind.c[39m[22m    2.89 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                                 [1m[32mstatic/websockify/run[39m[22m   98 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                               [1m[32mstatic/websockify/test-requirements.txt[39m[22m  131 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                            [1m[32mstatic/websockify/setup.py[39m[22m    1.17 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/websockify/tests/echo.html[39m[22m    4.51 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                [1m[32mstatic/websockify/tests/echo_client.py[39m[22m    1.82 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/websockify/tests/echo.py[39m[22m    2.46 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                     [1m[33mstatic/novnc/vendor/browser-es-module-loader/dist/babel-worker.js[39m[22m     [1m[33m1.7 MB[39m[22m        [1m[39m[22m  [1m[32m[emitted][39m[22m  [1m[33m[big][39m[22m  
+                                           [1m[32mstatic/websockify/tests/fixtures/public.pem[39m[22m  451 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/websockify/tests/fixtures/private.pem[39m[22m    1.67 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                    [1m[32mstatic/websockify/tests/latency.py[39m[22m    2.46 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                        [1m[32mstatic/websockify/tests/fixtures/symmetric.key[39m[22m   12 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                  [1m[32mstatic/websockify/tests/latency.html[39m[22m    8.55 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                     [1m[32mstatic/websockify/tests/load.html[39m[22m    7.74 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                               [1m[32mstatic/websockify/tests/plain_echo.html[39m[22m    4.76 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                             [1m[32mstatic/websockify/tests/test_websocket.py[39m[22m    8.44 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/websockify/tests/load.py[39m[22m    5.11 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                        [1m[32mstatic/websockify/tests/test_websocketproxy.py[39m[22m    9.87 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/websockify/tests/test_auth_plugins.py[39m[22m    1.06 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                       [1m[32mstatic/websockify/websockify.py[39m[22m   98 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                      [1m[32mstatic/websockify/tests/test_websockifyserver.py[39m[22m    17.1 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                             [1m[32mstatic/websockify/tox.ini[39m[22m  529 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                              [1m[32mstatic/websockify/websockify/__init__.py[39m[22m   75 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                                   [1m[32mstatic/websockify/tests/simple.html[39m[22m    2.13 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                              [1m[32mstatic/websockify/websockify/__main__.py[39m[22m   94 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                          [1m[32mstatic/websockify/websockify/auth_plugins.py[39m[22m    3.34 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/websockify/websockify/sysloghandler.py[39m[22m    4.07 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                        [1m[32mstatic/websockify/websockify/websocketproxy.py[39m[22m    29.9 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                         [1m[32mstatic/websockify/websockify/token_plugins.py[39m[22m    5.02 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                             [1m[32mstatic/websockify/websockify/websocket.py[39m[22m    28.1 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                       [1m[32mstatic/websockify/websockify/websocketserver.py[39m[22m    3.35 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+      [1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/noVNC Websocket.csproj[39m[22m    3.04 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                      [1m[32mstatic/websockify/websockify/websockifyserver.py[39m[22m    32.3 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                  [1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/Program.cs[39m[22m  503 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+[1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/ProjectInstaller.Designer.cs[39m[22m    2.35 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+         [1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/ProjectInstaller.cs[39m[22m  409 bytes        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+       [1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/ProjectInstaller.resx[39m[22m    6.29 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                 [1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/Service1.cs[39m[22m    1.17 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+                                  [1m[32mstatic/websockify/Windows/Windows Service Readme.txt[39m[22m    1.86 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+  [1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/Properties/AssemblyInfo.cs[39m[22m    1.44 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+        [1m[32mstatic/websockify/Windows/noVNC Websocket Service Project/Service1.Designer.cs[39m[22m    1.08 kB        [1m[39m[22m  [1m[32m[emitted][39m[22m         
+
+  Build complete.
+
+  Tip: built files are meant to be served over an HTTP server.
+  Opening index.html over file:// won't work.
+
+Done in 45.58s.
+Removing intermediate container 7d4817add417
+ ---> 4b1d16fdb5af
+Step 26/36 : RUN sed -i 's#app/locale/#novnc/app/locale/#' /src/web/dist/static/novnc/app/ui.js
+ ---> Running in 74c4c3a85443
+Removing intermediate container 74c4c3a85443
+ ---> c9a8a4be1f8e
+Step 27/36 : FROM system
+ ---> 4f9b3db6ed5d
+Step 28/36 : LABEL maintainer="fcwu.tw@gmail.com"
+ ---> Running in 45f965bfd227
+Removing intermediate container 45f965bfd227
+ ---> 335427937f25
+Step 29/36 : COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
+ ---> d68c66a38d04
+Step 30/36 : COPY rootfs /
+ ---> 55ae3310a088
+Step 31/36 : RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/frontend/static/novnc/utils/websockify && 	chmod +x /usr/local/lib/web/frontend/static/websockify/run
+ ---> Running in 02271522f970
+Removing intermediate container 02271522f970
+ ---> 6a1bd34900db
+Step 32/36 : EXPOSE 80
+ ---> Running in b17054809ad5
+Removing intermediate container b17054809ad5
+ ---> 251dfefef02a
+Step 33/36 : WORKDIR /root
+ ---> Running in 17ac8005b637
+Removing intermediate container 17ac8005b637
+ ---> 6157f8d33a74
+Step 34/36 : ENV HOME=/home/ubuntu     SHELL=/bin/bash
+ ---> Running in 70d0e7553fe7
+Removing intermediate container 70d0e7553fe7
+ ---> def1cc8fa0da
+Step 35/36 : HEALTHCHECK --interval=30s --timeout=5s CMD curl --fail http://127.0.0.1:6079/api/health
+ ---> Running in f73f4caab5a4
+Removing intermediate container f73f4caab5a4
+ ---> e53a7c21f0bf
+Step 36/36 : ENTRYPOINT ["/startup.sh"]
+ ---> Running in ba447f3fff57
+Removing intermediate container ba447f3fff57
+ ---> 80bba5c16a55
+Successfully built 80bba5c16a55
+Successfully tagged houbenzhou/ubuntu_desktop:2004_cuda111_cudnn8_20210414
