@@ -3,12 +3,9 @@
 ################################################################################
 # base system
 ################################################################################
-FROM  nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04 as system
+FROM nvidia/cuda:10.1-cudnn8-devel-ubuntu18.04 as system
 
 RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
-
-# fix  "error:policy-rc.d denied execution of start"
-RUN echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
 
 # built-in packages
 ENV DEBIAN_FRONTEND noninteractive
@@ -22,7 +19,6 @@ RUN apt update \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
-
 # install debs error if combine together
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
@@ -32,17 +28,14 @@ RUN apt update \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-
 RUN apt update \
     && apt install -y gpg-agent \
     && curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && (dpkg -i ./google-chrome-stable_current_amd64.deb || apt-get install -fy) \
     && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add \
+    && apt-get -f install \
     && rm google-chrome-stable_current_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
-
-
-
 
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
@@ -70,9 +63,8 @@ RUN apt update \
 
 
 # install my tools
-# openjdk-8-jdk
 RUN apt update \
-    && apt install -y --no-install-recommends --allow-unauthenticated  git\    
+    && apt install -y --no-install-recommends --allow-unauthenticated openjdk-8-jdk git\    
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
@@ -93,46 +85,17 @@ COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
 RUN apt-get update \
     && apt-get install -y python3-pip python3-dev build-essential \
 	&& pip3 install setuptools wheel && pip3 install -r /tmp/requirements.txt \
-	&& pip3 install geventwebsocket paramiko gevent-websocket \
     && ln -s /usr/bin/python3 /usr/local/bin/python \
     && apt-get autoclean -y \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/* /tmp/a.txt /tmp/b.txt
 
-# install libidn (support java objectspy)
-RUN apt update \
-    && apt install -y libidn11-dev \
-    && apt autoclean -y \
-    && apt autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
-
-
-
-# install maven
-
-
-
-# install conda  
-RUN apt-get -qq update && apt-get -qq -y install curl bzip2 \
-    && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
-    && bash /tmp/miniconda.sh -bfp /usr/local \
-    && rm -rf /tmp/miniconda.sh \
-    && conda install -y python=3 \
-    && conda update conda \
-    && apt-get -qq -y autoremove \
-    && apt-get autoclean \
-    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
-    && conda clean --all --yes
-
-ENV PATH /opt/conda/bin:$PATH
-
-
 
 ################################################################################
 # builder
 ################################################################################
-FROM  nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04 as builder
+FROM nvidia/cuda:10.1-cudnn8-devel-ubuntu18.04 as builder
 
 
 RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
